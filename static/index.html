@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic Dating</title>
+<style>
+:root{
+  --bg:#faf6f1; --card:#ffffff; --ink:#221b19; --mute:#7a6c66; --line:#eadfd6;
+  --accent:#d9482b; --accent-2:#2b6f6b; --soft:#fbe9e3; --soft2:#e2f1ef; --shadow:0 1px 2px rgba(60,30,20,.06),0 8px 24px rgba(60,30,20,.06);
+  --ok:#2f8f5b; --warn:#b9770e; --bad:#b83a3a;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#171210; --card:#211a17; --ink:#f3ebe6; --mute:#a99a92; --line:#352b26; --soft:#3a211b; --soft2:#17302e; --shadow:none}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3{font-family:ui-serif,Georgia,"Times New Roman",serif;font-weight:600;letter-spacing:-.01em;margin:0}
+a{color:var(--accent-2)}
+header{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar{max-width:1180px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.brand{font-family:ui-serif,Georgia,serif;font-size:20px;font-weight:700}
+.brand b{color:var(--accent)}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav a{padding:7px 13px;border-radius:999px;text-decoration:none;color:var(--mute);font-weight:500}
+nav a.on{background:var(--ink);color:var(--bg)}
+.pill{margin-left:auto;font-size:12px;padding:4px 10px;border-radius:999px;background:var(--soft2);color:var(--accent-2);font-weight:600}
+.pill.static{background:var(--soft);color:var(--accent)}
+main{max-width:1180px;margin:0 auto;padding:24px 20px 80px}
+.banner{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:20px;font-size:13.5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+.pcard{cursor:pointer;transition:transform .12s,border-color .12s}
+.pcard:hover{transform:translateY(-2px);border-color:var(--accent)}
+.av{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;font-family:ui-serif,Georgia,serif;flex:none}
+.row{display:flex;gap:12px;align-items:center}
+.mute{color:var(--mute)}
+.small{font-size:12.5px}
+.chip{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--soft2);color:var(--accent-2);font-size:12.5px;font-weight:600;margin:2px 4px 2px 0}
+.chip.warm{background:var(--soft);color:var(--accent)}
+.chip.gray{background:var(--line);color:var(--mute)}
+.tag{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:6px;font-weight:700}
+.tag.fict{background:#efe3ff;color:#6b3fb0}
+.tag.real{background:#ddf3e5;color:var(--ok)}
+.tag.stated{background:#ddf3e5;color:var(--ok)}
+.tag.inferred{background:#fdf0d5;color:var(--warn)}
+h2{font-size:26px;margin-bottom:6px}
+h3{font-size:17px;margin:0 0 8px}
+.two{display:grid;grid-template-columns:1fr 1.25fr;gap:18px;align-items:start}
+@media(max-width:860px){.two{grid-template-columns:1fr}}
+.sec{margin-bottom:16px}
+details{border-top:1px dashed var(--line);padding:6px 0}
+details:first-of-type{border-top:0}
+summary{cursor:pointer;list-style:none;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"evidence ▾";margin-left:auto;font-size:11.5px;color:var(--mute)}
+details[open] summary::after{content:"hide ▴"}
+.ev{margin:6px 0 4px;padding:8px 10px;background:var(--bg);border-left:3px solid var(--accent);border-radius:6px;font-size:13px}
+.ev i{color:var(--mute);font-style:normal;font-size:11.5px;display:block;margin-bottom:2px}
+.bar-meter{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:6px 0 2px}
+.bar-meter span{display:block;height:100%;background:linear-gradient(90deg,var(--accent-2),var(--accent))}
+button,.btn{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:9px 16px;background:var(--accent);color:#fff;font-weight:600;text-decoration:none;display:inline-block}
+button.ghost,.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button:disabled{opacity:.5;cursor:not-allowed}
+select,input,textarea{font:inherit;width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+textarea{min-height:120px;resize:vertical}
+label{display:block;font-weight:600;margin:12px 0 4px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+.src p{margin:4px 0}
+.cap{font-size:13.5px;padding:6px 0;border-top:1px dashed var(--line)}
+/* dates */
+.stage{display:grid;grid-template-columns:330px 1fr;gap:18px;align-items:start}
+@media(max-width:960px){.stage{grid-template-columns:1fr}}
+.feed{max-height:70vh;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.fitem{padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card);cursor:pointer;font-size:13.5px}
+.fitem:hover,.fitem.on{border-color:var(--accent)}
+.score{display:inline-block;min-width:38px;text-align:center;border-radius:8px;padding:1px 7px;color:#fff;font-weight:700;font-size:13px}
+.chat{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.msg{max-width:84%;padding:10px 14px;border-radius:16px;animation:pop .25s ease both;font-size:14.5px}
+.msg small{display:block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;opacity:.7;margin-bottom:2px}
+.msg.l{background:var(--soft);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.r{background:var(--soft2);align-self:flex-end;border-bottom-right-radius:4px}
+.msg.v{max-width:100%;align-self:stretch;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.msg .k{float:right;font-size:10.5px;opacity:.6;margin-left:10px}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.prog{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin:8px 0}
+.prog span{display:block;height:100%;background:var(--accent);width:0;transition:width .2s}
+.ctrl{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.ctrl > div{min-width:160px;flex:1}
+/* rankings */
+.rk{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:start;padding:12px 4px;border-top:1px solid var(--line)}
+.rk:first-child{border-top:0}
+.rn{font-family:ui-serif,Georgia,serif;font-size:22px;color:var(--mute);font-weight:700}
+.why li,.watch li{font-size:13px;margin:1px 0}
+.watch li{color:var(--warn)}
+ul{margin:6px 0;padding-left:18px}
+.matrix{overflow:auto;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:10px}
+.matrix table{border-collapse:collapse;font-size:10.5px}
+.matrix th{font-weight:600;padding:2px 4px;white-space:nowrap;color:var(--mute);position:sticky;left:0;background:var(--card);text-align:right}
+.matrix th.c{position:static;writing-mode:vertical-rl;transform:rotate(180deg);text-align:left;height:90px}
+.matrix td{width:26px;height:24px;text-align:center;color:#fff;cursor:pointer;border:1px solid var(--card)}
+.matrix td.me{background:var(--line);cursor:default}
+.err{color:var(--bad);font-weight:600;margin-top:8px}
+.ok{color:var(--ok);font-weight:600;margin-top:8px}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <div class="brand">agentic<b>.</b>dating</div>
+  <nav id="nav">
+    <a href="#/profiles" data-r="profiles">Profiles</a>
+    <a href="#/dates" data-r="dates">Agents date</a>
+    <a href="#/rankings" data-r="rankings">Rankings</a>
+    <a href="#/matrix" data-r="matrix">Matrix</a>
+    <a href="#/add" data-r="add">Add yourself</a>
+  </nav>
+  <span class="pill" id="mode">…</span>
+</div></header>
+<main id="app"><p class="mute">Loading…</p></main>
+
+<script>
+/* ============================== data layer ============================== */
+let MODE = 'live', PEOPLE = [], DEMO = null, CLAUDE = false;
+const DATES = {};            // "a|b" -> date
+const RANKS = {};            // id -> ranking[]
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const key = (a, b) => a < b ? a + '|' + b : b + '|' + a;
+const byId = id => PEOPLE.find(p => p.id === id);
+const first = n => n.split(' ')[0];
+const hue = s => Math.max(0, Math.min(130, (s - 25) * 2.1));
+const colorOf = s => `hsl(${hue(s)} 55% 42%)`;
+const initials = n => n.split(' ').map(x => x[0]).slice(0, 2).join('');
+const avatarColor = id => { let h = 0; for (const c of id) h = (h * 31 + c.charCodeAt(0)) % 360; return `hsl(${h} 45% 45%)`; };
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+async function init() {
+  try {
+    const r = await fetch('/api/state'); if (!r.ok) throw 0;
+    const s = await r.json(); PEOPLE = s.people; CLAUDE = s.claude_available; MODE = 'live';
+  } catch (e) {
+    for (const u of ['demo.json', '/static/demo.json', 'static/demo.json']) {
+      try { const r = await fetch(u); if (r.ok) { DEMO = await r.json(); break; } } catch (_) {}
+    }
+    if (!DEMO) { $('#app').innerHTML = '<p class="err">Could not load data.</p>'; return; }
+    PEOPLE = DEMO.people; MODE = 'static';
+    for (const d of DEMO.dates) DATES[key(d.a, d.b)] = d;
+    Object.assign(RANKS, DEMO.rankings);
+  }
+  const pill = $('#mode');
+  pill.textContent = MODE === 'live' ? 'live API' : 'pre-run snapshot (read-only)';
+  pill.className = 'pill' + (MODE === 'static' ? ' static' : '');
+  route();
+}
+async function getDate(a, b) {
+  const k = key(a, b); if (DATES[k]) return DATES[k];
+  const [x, y] = k.split('|');
+  const d = await (await fetch(`/api/date/${x}/${y}`)).json(); DATES[k] = d; return d;
+}
+async function getRanking(id, fresh) {
+  if (RANKS[id] && !fresh) return RANKS[id];
+  RANKS[id] = await (await fetch('/api/rankings/' + id)).json(); return RANKS[id];
+}
+async function getAllRankings() {
+  if (MODE === 'live') { const r = await (await fetch('/api/rankings')).json(); Object.assign(RANKS, r); }
+  return RANKS;
+}
+
+/* ============================== router ============================== */
+window.addEventListener('hashchange', route);
+function route() {
+  const parts = (location.hash || '#/profiles').slice(2).split('/');
+  const [r, a, b] = parts;
+  document.querySelectorAll('#nav a').forEach(x => x.classList.toggle('on', x.dataset.r === (r === 'profile' ? 'profiles' : r)));
+  const app = $('#app'); app.innerHTML = '';
+  window.scrollTo(0, 0);
+  if (r === 'profile') return viewProfile(app, a);
+  if (r === 'dates') return viewDates(app, a, b);
+  if (r === 'rankings') return viewRankings(app, a);
+  if (r === 'matrix') return viewMatrix(app);
+  if (r === 'add') return viewAdd(app);
+  return viewProfiles(app);
+}
+const banner = () => PEOPLE.some(p => p.fictional)
+  ? `<div class="banner"><b>Demo data.</b> The ${PEOPLE.filter(p => p.fictional).length} demo people are <b>fictional</b>, written to look like LinkedIn and Instagram profiles. People added on the <a href="#/add">Add yourself</a> page are real, consented, and marked as such.</div>` : '';
+
+/* ============================== profiles ============================== */
+function viewProfiles(app) {
+  app.innerHTML = `<h2>Profiles</h2><p class="mute">Each person is read by an agent from exactly two sources: LinkedIn and Instagram. Open one to see the analysis and the evidence behind it.</p>${banner()}<div class="grid" id="g"></div>`;
+  $('#g').innerHTML = PEOPLE.map(p => `
+    <div class="card pcard" onclick="location.hash='#/profile/${p.id}'">
+      <div class="row"><div class="av" style="background:${avatarColor(p.id)}">${initials(p.name)}</div>
+        <div><b>${esc(p.name)}</b> <span class="tag ${p.fictional ? 'fict' : 'real'}">${p.fictional ? 'fictional' : 'real'}</span><br><span class="mute small">${p.age ? p.age + ' · ' : ''}${esc(p.city)}</span></div></div>
+      <p class="small mute" style="margin:10px 0 6px">${esc(p.linkedin.headline)}</p>
+      <div>${p.analysis.hobbies.slice(0, 3).map(h => `<span class="chip">${esc(h.name)}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+const evHtml = list => (list || []).map(e => `<div class="ev"><i>${esc(e.source)}</i>“${esc(e.text)}”</div>`).join('');
+const item = (title, tagHtml, ev) => `<details><summary><b>${esc(title)}</b>${tagHtml || ''}</summary>${evHtml(ev) || '<div class="ev mute">No single line; inferred from the overall text.</div>'}</details>`;
+const basis = b => `<span class="tag ${b}">${b}</span>`;
+
+function viewProfile(app, id) {
+  const p = byId(id); if (!p) { app.innerHTML = '<p>Unknown person.</p>'; return; }
+  const a = p.analysis, li = p.linkedin, ig = p.instagram;
+  app.innerHTML = `
+  <p><a href="#/profiles">← all profiles</a></p>
+  <div class="row" style="margin-bottom:6px"><div class="av" style="width:56px;height:56px;font-size:20px;background:${avatarColor(p.id)}">${initials(p.name)}</div>
+    <div><h2 style="margin:0">${esc(p.name)} <span class="tag ${p.fictional ? 'fict' : 'real'}">${p.fictional ? 'fictional demo persona' : 'real · consented'}</span></h2>
+    <span class="mute">${p.age ? p.age + ' · ' : ''}${esc(p.city)}</span></div></div>
+  <div class="card" style="margin:14px 0;border-left:4px solid var(--accent)"><b>The agent's read.</b> ${esc(a.summary)}
+    ${a.ideal_partner ? `<p class="small" style="margin:6px 0 0">Ideal partner (inferred): ${esc(a.ideal_partner)}</p>` : ''}
+    <div class="small mute" style="margin-top:6px">engine: ${esc(a.engine)}${a.engine_note ? ' · ' + esc(a.engine_note) : ''} · every item below can be expanded to see the exact line it came from.</div></div>
+  <div class="row" style="margin-bottom:16px;flex-wrap:wrap">
+    <a class="btn" href="#/rankings/${p.id}">See ${esc(first(p.name))}'s ranking</a>
+    <a class="btn ghost" href="#/dates/${p.id}">Watch ${esc(first(p.name))}'s agent date</a>
+    ${p.fictional ? '' : `<button class="ghost" onclick="removePerson('${p.id}')">Remove me</button>`}</div>
+  <div class="two">
+    <div>
+      <div class="card sec src"><h3>Source 1 · LinkedIn</h3>
+        <div class="small mute">${esc(li.url)}</div>
+        <p><b>${esc(li.headline)}</b></p><p>${esc(li.about)}</p>
+        ${(li.experience || []).length ? `<p class="small mute"><b>Experience</b></p><ul class="small">${li.experience.map(e => `<li>${esc(e)}</li>`).join('')}</ul>` : ''}
+        ${(li.skills || []).length ? `<div>${li.skills.map(s => `<span class="chip gray">${esc(s)}</span>`).join('')}</div>` : ''}</div>
+      <div class="card sec src"><h3>Source 2 · Instagram</h3>
+        <div class="small mute">${esc(ig.url)}</div>
+        <p><b>@${esc(ig.handle)}</b> · ${esc(ig.bio)}</p>
+        ${(ig.captions || []).map(c => `<div class="cap">${esc(c)}</div>`).join('')}</div>
+    </div>
+    <div>
+      <div class="card sec"><h3>Hobbies</h3>${a.hobbies.map(h => item(h.name, `<span class="chip">${h.from.join(' + ')}</span>`, h.evidence)).join('') || '<span class="mute">None found.</span>'}</div>
+      <div class="card sec"><h3>Interests (incl. professional)</h3>
+        ${a.interests.map(i => `<span class="chip ${i.professional ? 'warm' : ''}" title="${esc(i.from.join(' + '))}">${esc(i.name)}</span>`).join('')}</div>
+      <div class="card sec"><h3>Values</h3>${a.values.map(v => item(v.name, basis(v.basis), v.evidence)).join('')}</div>
+      <div class="card sec"><h3>Needs from a partner</h3>
+        ${a.needs.map(n => item(n.need, basis(n.basis), n.evidence)).join('')}
+        <div class="small mute" style="margin-top:6px"><b>stated</b> = the person wrote it. <b>inferred</b> = the agent concluded it from what they value; weighed lower when dating.</div></div>
+      <div class="card sec"><h3>Other qualities</h3>
+        <div>${a.qualities.map(q => `<span class="chip warm">${esc(q)}</span>`).join('')}</div>
+        <p class="small" style="margin:10px 0 2px"><b>Social energy:</b> ${esc(a.social_energy.label)}</p>
+        <div class="bar-meter"><span style="width:${Math.round(a.social_energy.score * 100)}%"></span></div>
+        <div class="small mute" style="display:flex;justify-content:space-between"><span>low-key</span><span>high-energy</span></div>
+        <p class="small" style="margin:10px 0 2px"><b>Communication style:</b> ${esc(a.communication_style.label)} <span class="mute">(${a.communication_style.stats.avg_caption_chars} chars/caption avg, inferred)</span></p>
+        <p class="small" style="margin:6px 0 2px"><b>Work intensity:</b> ${esc(a.professional.work_intensity)}</p>
+        ${a.deal_breakers_stated.length ? `<p class="small" style="margin:6px 0 2px"><b>Stated deal-breakers:</b> ${a.deal_breakers_stated.map(d => `<span class="chip warm">${esc(d.text)}</span>`).join('')}</p>` : ''}
+        ${a.traits_that_others_may_mind.length ? `<p class="small" style="margin:6px 0 2px"><b>Traits others may mind:</b> ${a.traits_that_others_may_mind.map(t => `<span class="chip gray">${esc(t)}</span>`).join('')}</p>` : ''}
+        ${(a.watch_outs || []).length ? `<p class="small">Watch-outs: ${a.watch_outs.map(esc).join('; ')}</p>` : ''}</div>
+    </div>
+  </div>`;
+}
+async function removePerson(id) {
+  if (!confirm('Remove this person and their dates?')) return;
+  await fetch('/api/people/' + id, { method: 'DELETE' });
+  PEOPLE = PEOPLE.filter(p => p.id !== id); for (const k of Object.keys(DATES)) if (k.includes(id)) delete DATES[k];
+  for (const k of Object.keys(RANKS)) delete RANKS[k];
+  location.hash = '#/profiles';
+}
+
+/* ============================== dates ============================== */
+let RUN = 0, SKIP = false;
+function chatHtml(d, animate) {
+  return d.turns.map((t, i) => {
+    const left = t.speaker === d.a;
+    const cls = t.kind === 'verdict' ? 'v' : left ? 'l' : 'r';
+    return `<div class="msg ${cls}" style="${animate ? '' : 'animation:none'}"><small>${esc(t.agent)}<span class="k">${esc(t.kind)}</span></small>${esc(t.text)}</div>`;
+  }).join('');
+}
+function dateHead(d) {
+  const A = byId(d.a), B = byId(d.b); if (!A || !B) return '';
+  const m = d.scores.mutual;
+  return `<div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+    <div><h3 style="margin:0">${esc(A.name)} × ${esc(B.name)}</h3>
+    <span class="small mute">${esc(A.city)} · ${esc(B.city)} · engine: ${esc(d.engine)}</span></div>
+    <div class="row" style="gap:6px"><span class="small mute">${esc(first(A.name))}</span><span class="score" style="background:${colorOf(d.scores.a_view)}">${d.scores.a_view}</span>
+    <span class="small mute">${esc(first(B.name))}</span><span class="score" style="background:${colorOf(d.scores.b_view)}">${d.scores.b_view}</span>
+    <span class="small mute">mutual</span><span class="score" style="background:${colorOf(m)}">${m}</span></div></div>
+    ${d.shared_interests.length ? `<div style="margin-top:6px">${d.shared_interests.slice(0, 4).map(s => `<span class="chip">${esc(s)}</span>`).join('')}</div>` : ''}`;
+}
+async function showDate(d, animate, speed) {
+  const stage = $('#stage'); if (!stage) return;
+  stage.innerHTML = dateHead(d) + '<div class="chat" id="chat"></div>';
+  const chat = $('#chat');
+  if (!animate) { chat.innerHTML = chatHtml(d, false); return; }
+  const my = RUN;
+  for (const t of d.turns) {
+    if (my !== RUN) return;
+    chat.insertAdjacentHTML('beforeend', chatHtml({ ...d, turns: [t] }, true));
+    chat.lastElementChild.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    const wait = speed * Math.min(2, 0.5 + t.text.length / 160);
+    for (let w = 0; w < wait && !SKIP; w += 40) await sleep(40);
+    if (my !== RUN) return;
+  }
+}
+
+async function viewDates(app, a, b) {
+  const opts = `<option value="">Everyone vs everyone (${PEOPLE.length * (PEOPLE.length - 1) / 2} dates)</option>` + PEOPLE.map(p => `<option value="${p.id}">${esc(p.name)}'s agent dates everyone</option>`).join('');
+  app.innerHTML = `<h2>Agents date</h2>
+  <p class="mute">Every person is represented by an agent that knows only that person's LinkedIn and Instagram. The agents go on dates with each other, one conversation at a time, and each gives its own verdict.</p>${banner()}
+  <div class="card"><div class="ctrl">
+    <div><label style="margin-top:0">Who dates</label><select id="who">${opts}</select></div>
+    <div><label style="margin-top:0">Speed</label><select id="spd"><option value="900">Cinematic</option><option value="450" selected>Normal</option><option value="120">Fast</option><option value="0">Turbo</option></select></div>
+    ${CLAUDE && MODE === 'live' ? `<div><label style="margin-top:0">Agent engine</label><select id="eng"><option value="claude">Claude agents (live LLM turns)</option><option value="scripted">Scripted (instant, from analysis)</option></select></div>` : ''}
+    <div style="flex:none"><button id="go">▶ Start dating</button> <button class="ghost" id="skip">Skip ⏭</button></div></div>
+    <div class="prog"><span id="pg"></span></div><div class="small mute" id="st">Pick who dates, press start, and watch.</div></div>
+  <div class="stage" style="margin-top:16px"><div><h3>Dates so far</h3><div class="feed" id="feed"></div></div>
+  <div class="card" id="stage"><span class="mute">The conversation appears here.</span></div></div>`;
+  if (a && b && byId(a) && byId(b)) { showDate(await getDate(a, b), false); }
+  else if (a && byId(a)) { $('#who').value = a; }
+  $('#skip').onclick = () => { SKIP = true; setTimeout(() => SKIP = false, 120); };
+  $('#go').onclick = startRun;
+}
+function feedItem(d, n) {
+  const A = byId(d.a), B = byId(d.b);
+  return `<div class="fitem" data-k="${key(d.a, d.b)}"><div class="row" style="justify-content:space-between"><span>${esc(first(A.name))} × ${esc(first(B.name))}</span><span class="score" style="background:${colorOf(d.scores.mutual)}">${d.scores.mutual}</span></div>
+  <div class="small mute">${d.verdict.a.label} / ${d.verdict.b.label}</div></div>`;
+}
+async function startRun() {
+  RUN++; const my = RUN; SKIP = false;
+  const who = $('#who').value, speed = +$('#spd').value, eng = $('#eng') ? $('#eng').value : 'scripted';
+  const feed = $('#feed'); feed.innerHTML = '';
+  const go = $('#go'); go.disabled = true;
+  const done = () => { go.disabled = false; };
+  const pg = $('#pg'), st = $('#st');
+  let list;
+  if (MODE === 'static') {
+    const ids = PEOPLE.map(p => p.id);
+    const pairs = who ? ids.filter(i => i !== who).map(o => [who, o])
+      : ids.flatMap((x, i) => ids.slice(i + 1).map(y => [x, y]));
+    list = (async function* () { for (const [x, y] of pairs) yield [await getDate(x, y), pairs.length]; })();
+  } else {
+    const url = `/api/stream?delay=0&engine=${eng}` + (who ? '&person=' + who : '');
+    const es = new EventSource(url); const q = []; let fin = false, total = 0;
+    es.addEventListener('start', e => { total = JSON.parse(e.data).total; });
+    es.addEventListener('date', e => { const j = JSON.parse(e.data); DATES[key(j.date.a, j.date.b)] = j.date; q.push([j.date, j.total]); });
+    es.addEventListener('done', () => { fin = true; es.close(); });
+    es.onerror = () => { fin = true; es.close(); };
+    list = (async function* () { while (true) { if (q.length) { yield q.shift(); } else if (fin) return; else await sleep(60); } })();
+  }
+  let n = 0;
+  for await (const [d, total] of list) {
+    if (my !== RUN) return;
+    n++; pg.style.width = (100 * n / total) + '%';
+    st.textContent = `Date ${n} of ${total}: ${byId(d.a).name} × ${byId(d.b).name}`;
+    feed.insertAdjacentHTML('afterbegin', feedItem(d, n));
+    feed.firstElementChild.onclick = () => { RUN++; showDate(d, false); document.querySelectorAll('.fitem').forEach(x => x.classList.remove('on')); };
+    if (speed === 0) { if (n % 5 === 0 || n === total) { await showDate(d, false); } await sleep(20); }
+    else await showDate(d, true, speed);
+  }
+  if (my === RUN) { st.innerHTML = `Done: ${n} dates. <a href="#/rankings${who ? '/' + who : ''}">See the rankings →</a>`; }
+  done();
+}
+
+/* ============================== rankings ============================== */
+async function viewRankings(app, id) {
+  id = id && byId(id) ? id : PEOPLE[0].id;
+  app.innerHTML = `<h2>Rankings</h2><p class="mute">For each person: who fits them best. The score blends their own agent's verdict (60%) with the other agent's verdict (40%), so being wanted back matters.</p>${banner()}
+  <div class="card" style="margin-bottom:16px"><label style="margin-top:0">Ranking for</label><select id="rp">${PEOPLE.map(p => `<option value="${p.id}" ${p.id === id ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}</select></div>
+  <div class="card" id="rk"><span class="mute">Running dates…</span></div>`;
+  $('#rp').onchange = e => { location.hash = '#/rankings/' + e.target.value; };
+  const rows = await getRanking(id), me = byId(id);
+  $('#rk').innerHTML = `<h3>${esc(me.name)}'s best fits</h3>` + rows.map(r => `
+    <div class="rk"><div class="rn">${r.rank}</div>
+      <div><b><a href="#/profile/${r.id}" style="color:inherit">${esc(r.name)}</a></b> <span class="mute small">${esc(r.city)} · ${esc(r.label)} · you ${r.your_view} / them ${r.their_view}</span>
+        ${r.why.length ? `<ul class="why">${r.why.map(w => `<li>${esc(w)}</li>`).join('')}</ul>` : ''}
+        ${r.watch.length ? `<ul class="watch">${r.watch.map(w => `<li>${esc(w)}</li>`).join('')}</ul>` : ''}
+        <a class="small" href="#/dates/${id}/${r.id}">read their date →</a></div>
+      <div class="score" style="background:${colorOf(r.score)};font-size:17px;padding:4px 10px">${r.score}</div></div>`).join('');
+}
+
+async function viewMatrix(app) {
+  app.innerHTML = `<h2>Compatibility matrix</h2><p class="mute">Row = whose ranking, column = the date partner. Colour is the score from the row person's point of view (red low, green high). Click a cell to read the date.</p><div class="matrix" id="mx"><span class="mute">Running dates…</span></div>`;
+  const R = await getAllRankings();
+  if (!PEOPLE.every(p => R[p.id])) await Promise.all(PEOPLE.map(p => getRanking(p.id)));
+  let h = '<table><tr><th></th>' + PEOPLE.map(p => `<th class="c">${esc(p.name)}</th>`).join('') + '</tr>';
+  for (const r of PEOPLE) {
+    h += `<tr><th>${esc(r.name)}</th>`;
+    const map = Object.fromEntries((RANKS[r.id] || []).map(x => [x.id, x.score]));
+    for (const c of PEOPLE) h += r.id === c.id ? '<td class="me"></td>' : `<td style="background:${colorOf(map[c.id] ?? 0)}" title="${esc(r.name)} → ${esc(c.name)}: ${map[c.id]}" onclick="location.hash='#/dates/${r.id}/${c.id}'">${map[c.id] ?? ''}</td>`;
+    h += '</tr>';
+  }
+  $('#mx').innerHTML = h + '</table>';
+}
+
+/* ============================== add person ============================== */
+const SAMPLE = {
+  linkedin_text: "Headline: Sample: Marketing analyst who loves trail running\nAbout: (sample text, replace with your own) I analyse campaigns by day and run trails by weekend. I'm curious, a bit of an introvert and I'm looking for someone kind who enjoys long conversations and slow mornings.\nSkills: SQL, Analytics, Storytelling",
+  instagram_text: "Bio: trails, books, filter coffee\nCaption: Sunrise trail run, then coffee. Perfect Sunday.\nCaption: Finished another novel. Quiet weekends are underrated.\nCaption: Cooked a big pot of dal for friends. Food is how I say thanks."
+};
+function viewAdd(app) {
+  const ro = MODE === 'static';
+  app.innerHTML = `<h2>Add yourself</h2>
+  <p class="mute">Paste your own public LinkedIn and Instagram links, plus the text from those two profiles. The agent reads that text and nothing else.</p>
+  ${ro ? '<div class="banner"><b>Read-only snapshot.</b> Adding people needs the live API (run the server or use the live site).</div>' : ''}
+  <div class="banner"><b>Why paste text?</b> This site does not scrape LinkedIn or Instagram (against their terms, and it would mean profiling people who have not agreed). The links are stored as the source references; the agent analyses the text you paste next to each link. Only add yourself, or someone who has said yes.</div>
+  <div class="card"><form id="f">
+    <div class="cols"><div><label>Name</label><input name="name" required></div><div><label>City</label><input name="city" placeholder="e.g. Lucknow"></div></div>
+    <div class="cols"><div><label>LinkedIn link</label><input name="linkedin_url" placeholder="https://www.linkedin.com/in/your-name" required></div>
+    <div><label>Instagram link (public profile)</label><input name="instagram_url" placeholder="https://www.instagram.com/your.handle" required></div></div>
+    <div class="cols"><div><label>LinkedIn text <span class="mute small">(Headline: … / About: … / Experience: … / Skills: a, b)</span></label><textarea name="linkedin_text"></textarea></div>
+    <div><label>Instagram text <span class="mute small">(Bio: … / Caption: … one per line)</span></label><textarea name="instagram_text"></textarea></div></div>
+    <label style="display:flex;gap:8px;align-items:flex-start;font-weight:500"><input type="checkbox" name="consent" style="width:auto;margin-top:4px"> <span>These profiles are mine, or belong to someone who agreed to be included.</span></label>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap"><button ${ro ? 'disabled' : ''}>Create profile &amp; analyse</button><button type="button" class="ghost" id="smp">Fill sample text</button></div>
+    <div id="msg"></div></form></div>`;
+  $('#smp').onclick = () => { const f = $('#f'); f.linkedin_text.value = SAMPLE.linkedin_text; f.instagram_text.value = SAMPLE.instagram_text; };
+  $('#f').onsubmit = async e => {
+    e.preventDefault(); const f = e.target, m = $('#msg'); m.innerHTML = '';
+    const body = { name: f.name.value, city: f.city.value, linkedin_url: f.linkedin_url.value, instagram_url: f.instagram_url.value,
+      linkedin_text: f.linkedin_text.value, instagram_text: f.instagram_text.value, consent: f.consent.checked };
+    const r = await fetch('/api/people', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+    const j = await r.json();
+    if (!r.ok) { m.innerHTML = `<div class="err">${esc(typeof j.detail === 'string' ? j.detail : 'Check the fields and try again.')}</div>`; return; }
+    PEOPLE.push(j); for (const k of Object.keys(RANKS)) delete RANKS[k];
+    location.hash = '#/profile/' + j.id;
+  };
+}
+init();
+</script>
+</body>
+</html>

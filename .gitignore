@@ -1,0 +1,6 @@
+.env
+__pycache__/
+*.pyc
+data/custom_people.json
+data/claude_dates.json
+.pytest_cache/
